@@ -1,12 +1,20 @@
 import re
+import os
 import nltk
 
 from collections import Counter
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
+# Configure NLTK data directory
+nltk_data_path = os.path.join(os.path.dirname(__file__), "nltk_data")
+
+nltk.data.path.insert(0, nltk_data_path)
+
+# Load stopwords
 stop_words = set(stopwords.words("english"))
 
+# Initialize lemmatizer
 lemmatizer = WordNetLemmatizer()
 
 
