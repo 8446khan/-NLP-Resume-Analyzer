@@ -1,0 +1,23 @@
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+.venv/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Uploaded resume files (private data)
+uploads/*
+!uploads/.gitkeep
+
+# Editor
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NLP Resume Analyzer</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <header>
+
+        <div class="header-content">
+
+            <div>
+                <h1>NLP Resume Analyzer</h1>
+
+                <p>
+                    Intelligent Resume Analysis using Natural Language Processing
+                </p>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="container">
+
+
+        <section class="upload-card">
+
+            <h2>Analyze Your Resume</h2>
+
+            <p class="description">
+                Upload your resume and enter the job description
+                to perform NLP-based analysis.
+            </p>
+
+
+            <form method="POST" enctype="multipart/form-data">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Upload Resume
+                    </label>
+
+                    <input type="file" name="resume" accept=".pdf" required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Job Description
+                    </label>
+
+                    <textarea name="job_description" placeholder="Paste the job description here..."
+                        required></textarea>
+
+                </div>
+
+
+                <button type="submit">
+
+                    Analyze Resume
+
+                </button>
+
+            </form>
+
+        </section>
+
+
+        {% if result %}
+
+
+        <section class="score-section">
+
+            <div class="score-card">
+
+                <h3>
+                    {{ result.matching.final_score }}%
+                </h3>
+
+                <p>
+                    Overall Score
+                </p>
+
+            </div>
+
+
+            <div class="score-card">
+
+                <h3>
+                    {{ result.matching.similarity }}%
+                </h3>
+
+                <p>
+                    TF-IDF Similarity
+                </p>
+
+            </div>
+
+
+            <div class="score-card">
+
+                <h3>
+                    {{ result.matching.skill_score }}%
+                </h3>
+
+                <p>
+                    Skill Match
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- WORD ANALYSIS -->
+
+        <section class="analysis-card">
+
+            <div class="section-title">
+
+                <span class="number">
+                    01
+                </span>
+
+                <div>
+
+                    <h2>Word Analysis</h2>
+
+                    <p>
+                        Analysis of words and vocabulary used in the resume
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="statistics">
+
+
+                <div class="stat">
+
+                    <span>
+                        Total Words
+                    </span>
+
+                    <strong>
+                        {{ result.words.total_words }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>
+                        Unique Words
+                    </span>
+
+                    <strong>
+                        {{ result.words.unique_words }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>
+                        Vocabulary Richness
+                    </span>
+
+                    <strong>
+                        {{ result.words.vocabulary_richness }}%
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <h3>
+                Most Frequent Words
+            </h3>
+
+
+            <div class="word-list">
+
+                {% for word, count in result.words.most_common %}
+
+                <div class="word-item">
+
+                    <span>
+                        {{ word }}
+                    </span>
+
+                    <strong>
+                        {{ count }}
+                    </strong>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+
+        <!-- SENTIMENT ANALYSIS -->
+
+        <section class="analysis-card">
+
+            <div class="section-title">
+
+                <span class="number">
+                    02
+                </span>
+
+                <div>
+
+                    <h2>Sentiment Analysis</h2>
+
+                    <p>
+                        Determines the emotional tone of the resume
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="sentiment-result">
+
+                <div class="sentiment-main">
+
+                    <span class="sentiment-label">
+
+                        Sentiment
+
+                    </span>
+
+                    <strong>
+
+                        {{ result.sentiment.sentiment }}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="sentiment-details">
+
+                    <div>
+
+                        <span>
+                            Polarity
+                        </span>
+
+                        <strong>
+                            {{ result.sentiment.polarity }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Subjectivity
+                        </span>
+
+                        <strong>
+                            {{ result.sentiment.subjectivity }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="sentiment-bars">
+
+
+                <div class="bar-row">
+
+                    <span>
+                        Positive
+                    </span>
+
+                    <div class="bar">
+
+                        <div class="positive" style="width: {{ result.sentiment.positive }}%;">
+                        </div>
+
+                    </div>
+
+                    <strong>
+                        {{ result.sentiment.positive }}%
+                    </strong>
+
+                </div>
+
+
+                <div class="bar-row">
+
+                    <span>
+                        Neutral
+                    </span>
+
+                    <div class="bar">
+
+                        <div class="neutral" style="width: {{ result.sentiment.neutral }}%;">
+                        </div>
+
+                    </div>
+
+                    <strong>
+                        {{ result.sentiment.neutral }}%
+                    </strong>
+
+                </div>
+
+
+                <div class="bar-row">
+
+                    <span>
+                        Negative
+                    </span>
+
+                    <div class="bar">
+
+                        <div class="negative" style="width: {{ result.sentiment.negative }}%;">
+                        </div>
+
+                    </div>
+
+                    <strong>
+                        {{ result.sentiment.negative }}%
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- SYNTAX ANALYSIS -->
+
+        <section class="analysis-card">
+
+            <div class="section-title">
+
+                <span class="number">
+                    03
+                </span>
+
+                <div>
+
+                    <h2>Syntax Analysis</h2>
+
+                    <p>
+                        Analyzes grammatical structure and parts of speech
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="statistics">
+
+
+                <div class="stat">
+
+                    <span>
+                        Nouns
+                    </span>
+
+                    <strong>
+                        {{ result.syntax.noun_count }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>
+                        Verbs
+                    </span>
+
+                    <strong>
+                        {{ result.syntax.verb_count }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>
+                        Adjectives
+                    </span>
+
+                    <strong>
+                        {{ result.syntax.adjective_count }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>
+                        Adverbs
+                    </span>
+
+                    <strong>
+                        {{ result.syntax.adverb_count }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>
+                        Pronouns
+                    </span>
+
+                    <strong>
+                        {{ result.syntax.pronoun_count }}
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>
+                        Proper Nouns
+                    </span>
+
+                    <strong>
+                        {{ result.syntax.proper_noun_count }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <h3>
+                Dependency Analysis
+            </h3>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Word
+                            </th>
+
+                            <th>
+                                POS
+                            </th>
+
+                            <th>
+                                Dependency
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for item in result.syntax.dependencies %}
+
+                        <tr>
+
+                            <td>
+                                {{ item.word }}
+                            </td>
+
+                            <td>
+                                {{ item.pos }}
+                            </td>
+
+                            <td>
+                                {{ item.dependency }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- JOB MATCHING -->
+
+        <section class="analysis-card">
+
+            <div class="section-title">
+
+                <span class="number">
+                    04
+                </span>
+
+                <div>
+
+                    <h2>Job Description Matching</h2>
+
+                    <p>
+                        Compares resume content with the target job
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <h3>
+                Matched Skills
+            </h3>
+
+
+            <div class="skills">
+
+                {% for skill in result.matching.matched_skills %}
+
+                <span class="skill matched">
+
+                    {{ skill }}
+
+                </span>
+
+                {% endfor %}
+
+            </div>
+
+
+            <h3 class="missing-title">
+
+                Missing Skills
+
+            </h3>
+
+
+            <div class="skills">
+
+                {% for skill in result.matching.missing_skills %}
+
+                <span class="skill missing">
+
+                    {{ skill }}
+
+                </span>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        {% endif %}
+
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            NLP Resume Analyzer | Python • NLTK • spaCy • Flask
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>
