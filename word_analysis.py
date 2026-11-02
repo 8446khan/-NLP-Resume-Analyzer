@@ -6,15 +6,23 @@ from collections import Counter
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-# Configure NLTK data directory
-nltk_data_path = os.path.join(os.path.dirname(__file__), "nltk_data")
+# Set NLTK data directory
+nltk_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "nltk_data")
+
+os.makedirs(nltk_data_path, exist_ok=True)
 
 nltk.data.path.insert(0, nltk_data_path)
 
-# Load stopwords
+# Download required NLTK resources if missing
+nltk.download("stopwords", download_dir=nltk_data_path, quiet=True)
+
+nltk.download("wordnet", download_dir=nltk_data_path, quiet=True)
+
+nltk.download("omw-1.4", download_dir=nltk_data_path, quiet=True)
+
+# Load stopwords after downloading
 stop_words = set(stopwords.words("english"))
 
-# Initialize lemmatizer
 lemmatizer = WordNetLemmatizer()
 
 
